@@ -1,0 +1,35 @@
+body {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.formField {
+  width: 300px;
+  align-items: start;
+  /* background-color: red; */
+  border: 2px solid black;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+}
+
+input {
+  padding: 10px;
+  flex-wrap: wrap;
+}
+
+select {
+  padding: 10px;
+  width: 100%;
+}
+
+button {
+  width: 100%;
+  padding: 9px;
+  margin-top: 10px;
+}
