@@ -17,47 +17,60 @@ function validateForm() {
   removeErrorMessages();
 
   let isValid = true;
+  const formData = {
+    firstName: document.getElementById("firstName").value.trim(),
+    lastName: document.getElementById("lastName").value.trim(),
+    otherNames: document.getElementById("otherNames").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    phoneNumber: document.getElementById("phoneNumber").value.trim(),
+    gender: document.getElementById("gender").value,
+  };
 
-  const firstNameInput = document.getElementById("firstName");
-  const lastNameInput = document.getElementById("lastName");
-  const otherNamesInput = document.getElementById("otherNames");
-  const emailInput = document.getElementById("email");
-  const phoneNumberInput = document.getElementById("phoneNumber");
-  const genderSelect = document.getElementById("gender");
-
-  if (!firstNameInput.value.trim()) {
+  if (!formData.firstName) {
     isValid = false;
-    showErrorMessage(firstNameInput, errorMessages.firstName);
+    showErrorMessage(
+      document.getElementById("firstName"),
+      errorMessages.firstName
+    );
   }
 
-  if (!lastNameInput.value.trim()) {
+  if (!formData.lastName) {
     isValid = false;
-    showErrorMessage(lastNameInput, errorMessages.lastName);
+    showErrorMessage(
+      document.getElementById("lastName"),
+      errorMessages.lastName
+    );
   }
 
-  if (otherNamesInput.value.trim() && !validateName(otherNamesInput.value)) {
+  if (formData.otherNames && !validateName(formData.otherNames)) {
     isValid = false;
-    showErrorMessage(otherNamesInput, errorMessages.otherNames);
+    showErrorMessage(
+      document.getElementById("otherNames"),
+      errorMessages.otherNames
+    );
   }
 
   const emailPattern = /^[\w.-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-  if (!emailPattern.test(emailInput.value)) {
+  if (!emailPattern.test(formData.email)) {
     isValid = false;
-    showErrorMessage(emailInput, errorMessages.email);
+    showErrorMessage(document.getElementById("email"), errorMessages.email);
   }
 
-  if (!/^\d{10}$/.test(phoneNumberInput.value)) {
+  if (!/^\d{10}$/.test(formData.phoneNumber)) {
     isValid = false;
-    showErrorMessage(phoneNumberInput, errorMessages.phoneNumber);
+    showErrorMessage(
+      document.getElementById("phoneNumber"),
+      errorMessages.phoneNumber
+    );
   }
 
-  if (!genderSelect.value) {
+  if (!formData.gender) {
     isValid = false;
-    showErrorMessage(genderSelect, errorMessages.gender);
+    showErrorMessage(document.getElementById("gender"), errorMessages.gender);
   }
 
   if (isValid) {
-    submitForm();
+    submitForm(formData);
   }
 }
 
@@ -78,22 +91,29 @@ function showErrorMessage(inputElement, message) {
 }
 
 function validateName(name) {
-  var letters = /^[A-Za-z]+$/;
+  const letters = /^[A-Za-z]+$/;
   return letters.test(name);
 }
 
-function submitForm() {
-  const formData = {
-    firstName: document.getElementById("firstName").value,
-    lastName: document.getElementById("lastName").value,
-    otherNames: document.getElementById("otherNames").value,
-    email: document.getElementById("email").value,
-    phoneNumber: document.getElementById("phoneNumber").value,
-    gender: document.getElementById("gender").value,
-  };
-
-  // Here you would normally send the data to the server.
-  // For demonstration purposes, we just log it to the console.
-  console.log("Form submitted successfully:", formData);
-  alert("Form submitted successfully!");
+function submitForm(formData) {
+  fetch("https://forms-assignment-hgtd.onrender.com", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.errors) {
+        Object.keys(data.errors).forEach((key) => {
+          showErrorMessage(document.getElementById(key), data.errors[key]);
+        });
+      } else {
+        alert("Form submitted successfully!");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }

@@ -96,7 +96,7 @@ function validateName(name) {
 }
 
 function submitForm(formData) {
-  fetch("/submit-form", {
+  fetch("https://forms-assignment-hgtd.onrender.com", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
