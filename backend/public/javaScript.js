@@ -96,14 +96,21 @@ function validateName(name) {
 }
 
 function submitForm(formData) {
-  fetch("https://forms-assignment-hgtd.onrender.com", {
+  fetch("https://forms-assignment-hgtd.onrender.com/submit-form", {
+    // Update this URL to your Render app URL
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(formData),
   })
-    .then((response) => response.json())
+    .then((response) => {
+      // Check if the response is okay (status 200-299)
+      if (!response.ok) {
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+      return response.json();
+    })
     .then((data) => {
       if (data.errors) {
         Object.keys(data.errors).forEach((key) => {
@@ -115,5 +122,6 @@ function submitForm(formData) {
     })
     .catch((error) => {
       console.error("Error:", error);
+      alert("There was a problem with your submission: " + error.message);
     });
 }
